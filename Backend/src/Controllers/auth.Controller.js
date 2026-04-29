@@ -1,7 +1,7 @@
 import userModel from "../models/User.model.js";
 import crypto from "crypto"
 import jwt from "jsonwebtoken"
-import config from "../config/Config.js"
+import config from "../Config/Config.js"
 import SessionModel from "../models/Session.model.js"
 
 const registerUser = async(req,res) => {
