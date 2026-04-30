@@ -4,6 +4,13 @@ import jwt from "jsonwebtoken"
 import config from "../Config/Config.js"
 import SessionModel from "../models/Session.model.js"
 
+const refreshCookieOptions = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+}
+
 const registerUser = async(req,res) => {
 
     const {username,email,password} = req.body;
@@ -51,12 +58,7 @@ const registerUser = async(req,res) => {
         expiresIn:"15m"
     })
 
-    res.cookie("refreshToken",refreshtoken,{
-        httpOnly:true,
-        secure:true,
-        sameSite:"strict",
-        maxAge: 7*24*60*60*1000
-    })
+    res.cookie("refreshToken",refreshtoken,refreshCookieOptions)
 
     res.status(201).json({
         message:"User registered Successfully",
@@ -113,12 +115,7 @@ const loginUser = async (req,res) => {
         expiresIn:"15m"
     })
 
-    res.cookie("refreshToken",refreshToken,{
-        httpOnly:true,
-        secure:true,
-        sameSite:"strict",
-        maxAge: 7*24*60*60*1000
-    })
+    res.cookie("refreshToken",refreshToken,refreshCookieOptions)
 
     res.status(200).json({
         message:'Logged in Successfully',
@@ -166,7 +163,7 @@ const Refreshtoken = async (req,res) => {
     const refreshtokenHash = crypto.createHash("sha256").update(refreshtoken).digest("hex");
 
     const session = await SessionModel.findOne({
-        refreshtokenHash,
+        refreshTokenHash: refreshtokenHash,
         revoked:false
     })
 
@@ -177,7 +174,7 @@ const Refreshtoken = async (req,res) => {
     }
 
     const accessToken = jwt.sign({
-        id: decoded._id,
+        id: decoded.id,
     },config.JWT_TOKEN,{expiresIn:"15m"})
 
     const newRefreshToken = jwt.sign({id:decoded.id},config.JWT_TOKEN,{expiresIn:"7d"})
@@ -187,12 +184,7 @@ const Refreshtoken = async (req,res) => {
     session.refreshTokenHash = newRefreshTokenHash;
     await session.save();
 
-    res.cookie("refreshToken",newRefreshToken,{
-        httpOnly:true,
-        secure:true,
-        sameSite:"strict",
-        maxAge: 7*24*60*1000
-    })
+    res.cookie("refreshToken",newRefreshToken,refreshCookieOptions)
 
     res.status(200).json({
         message:"Access token refreshed successfully",
@@ -226,7 +218,7 @@ const logoutUser = async (req,res) => {
     session.revoked = true;
     await session.save();
 
-    res.clearCookie("refreshToken")
+    res.clearCookie("refreshToken", refreshCookieOptions)
 
     res.status(200).json({
         message:'Logged out Successfully'
@@ -253,7 +245,7 @@ const logoutAll = async (req,res) => {
         revoked:true
     })
 
-    res.clearCookie("refreshToken")
+    res.clearCookie("refreshToken", refreshCookieOptions)
 
     res.status(200).json({
         message:"Logged out from all devices successfully"

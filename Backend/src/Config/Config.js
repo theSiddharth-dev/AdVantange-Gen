@@ -27,18 +27,18 @@ if (!process.env.CLOUDINARY_API_SECRET) {
 }
 
 if(!process.env.OPENROUTER_API_KEY){
-  throw new Error("OPENROUTER API KEY is not defined in environmental variables")
+  throw new Error("OpenRouter api key is not defined in environment variables")
 }
+
 
 const config = {
   MONGODB_URI: process.env.MONGODB_URI,
   PORT: process.env.PORT,
   JWT_TOKEN: process.env.JWT_TOKEN,
-  GEMINI_API_KEY: process.env.GEMINI_API_KEY,
-  OPENROUTER_API_KEY: process.env.OPENROUTER_API_KEY,
   CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME,
   CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
   CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
+  OPENROUTER_API_KEY: process.env.OPENROUTER_API_KEY,
 };
 
 export default config;
