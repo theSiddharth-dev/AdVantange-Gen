@@ -2,10 +2,28 @@ import generateText from "../Services/AiTextGeneration.js";
 import generateImage from "../Services/Ai.ImageGeneration.js";
 import composeImage from "../Services/composeService.js";
 import AdModel from "../models/Ad.model.js";
+import jwt from "jsonwebtoken";
+import config from "../Config/Config.js";
+
+const getAuthenticatedUserId = (req) => {
+  const token = req.headers.authorization?.split(" ")[1];
+
+  if (!token) {
+    return null;
+  }
+
+  try {
+    const decoded = jwt.verify(token, config.JWT_TOKEN);
+    return decoded.id;
+  } catch {
+    return null;
+  }
+};
 
 const generateAd = async (req, res) => {
   try {
     const { prompt, tone, logo } = req.body;
+    const userId = getAuthenticatedUserId(req) || req.user?.id || null;
 
     if (!prompt || !tone) {
       return res.status(400).json({
@@ -29,7 +47,7 @@ const generateAd = async (req, res) => {
     );
 
     const ad = await AdModel.create({
-      userId: req.user?.id,
+      userId,
       prompt,
       refinedPrompt: textData.refinedPrompt,
       caption: textData.caption,
@@ -53,4 +71,23 @@ const generateAd = async (req, res) => {
   }
 };
 
-export { generateAd };
+const getRecentAds = async (req, res) => {
+  try {
+    const userId =
+      req.query.userId || getAuthenticatedUserId(req) || req.user?.id || null;
+    const query = userId ? { userId } : {};
+    const ads = await AdModel.find(query).sort({ createdAt: -1 });
+
+    res.json({
+      success: true,
+      ads,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: err.message,
+    });
+  }
+};
+
+export { generateAd, getRecentAds };

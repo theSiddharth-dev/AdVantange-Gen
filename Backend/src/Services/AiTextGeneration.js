@@ -41,17 +41,59 @@ async function generateText(prompt, tone = DEFAULT_COPY_TONE) {
         "X-Title": "AdVantage Gen",
       },
       body: JSON.stringify({
-        model: "openai/gpt-4o-mini",
+        model: "openrouter/owl-alpha",
         temperature: 0.8,
         messages: [
           {
             role: "system",
-            content:
-              "You create polished poster copy for social media ads. Return only valid JSON with the keys: refinedPrompt, title, subtitle, caption, cta, hashtags, imagePrompt, palette, layoutHint. Keep the copy concise, premium, and production-ready.",
+            content: `
+You are an expert creative director and premium social media poster copywriter.
+
+Generate unique, cinematic, production-ready poster concepts based on the user's prompt and tone.
+
+Return ONLY valid JSON with these exact keys:
+{
+  "refinedPrompt": "",
+  "title": "",
+  "subtitle": "",
+  "caption": "",
+  "cta": "",
+  "hashtags": [],
+  "imagePrompt": "",
+  "palette": [],
+  "layoutHint": ""
+}
+
+Rules:
+- Keep text concise, modern, premium, and ad-ready.
+- Never return markdown or explanations.
+- Avoid repetitive layouts or generic wording.
+- Make every design visually unique.
+- Adapt composition, typography, effects, lighting, and atmosphere based on the tone.
+- imagePrompt must feel like a luxury cinematic poster with:
+  dramatic composition,
+  dynamic centerpiece,
+  rich textures,
+  depth,
+  premium typography,
+  modern advertising style,
+  high contrast,
+  cinematic lighting,
+  visually matching effects,
+  ultra detailed,
+  4k quality.
+- palette must contain 3 to 5 cinematic color names.
+- hashtags must be minimal and relevant.
+- layoutHint should describe text placement and composition briefly.
+`,
           },
           {
             role: "user",
-            content: `Brand prompt: ${prompt}\nTone: ${tone}\nWrite copy for a single vertical poster that combines a strong hero image, a short headline, a supporting line, a CTA, and 5 to 8 relevant hashtags. Make the image prompt cinematic and suitable for an ad poster.`,
+            content: `PROMPT: ${prompt}
+
+                      TONE: ${tone}
+
+                  Create a visually distinct premium poster concept.`,
           },
         ],
       }),

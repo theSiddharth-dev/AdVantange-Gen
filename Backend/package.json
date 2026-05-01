@@ -14,6 +14,7 @@
   "type": "module",
   "dependencies": {
     "@google/genai": "^1.50.1",
+    "@huggingface/inference": "^2.6.4",
     "axios": "^1.15.2",
     "bcrypt": "^6.0.0",
     "cloudinary": "^2.10.0",

@@ -228,17 +228,6 @@ const AuthPage = () => {
               </div>
             </label>
 
-            <div className="auth-form__meta">
-              <label className="remember-me">
-                <input type="checkbox" defaultChecked />
-                <span>Remember me</span>
-              </label>
-              {isSignIn && (
-                <button type="button" className="link-button">
-                  Forgot password?
-                </button>
-              )}
-            </div>
 
             {error && (
               <p className="feedback feedback--error" role="alert">

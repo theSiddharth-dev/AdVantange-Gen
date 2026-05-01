@@ -13,7 +13,6 @@ if (!process.env.JWT_TOKEN) {
   throw new Error("JWT TOKEN is not defined in environment variables");
 }
 
-
 if (!process.env.CLOUDINARY_CLOUD_NAME) {
   throw new Error("Cloudinary Name is not defines in environment variables");
 }
@@ -26,10 +25,13 @@ if (!process.env.CLOUDINARY_API_SECRET) {
   throw new Error("Cloudinary Secret is not defined in environment variables");
 }
 
-if(!process.env.OPENROUTER_API_KEY){
-  throw new Error("OpenRouter api key is not defined in environment variables")
+if (!process.env.OPENROUTER_API_KEY) {
+  throw new Error("OpenRouter api key is not defined in environment variables");
 }
 
+if (!process.env.HF_TOKEN) {
+  throw new Error("Hugging Face api is not defined in environment variables");
+}
 
 const config = {
   MONGODB_URI: process.env.MONGODB_URI,
@@ -39,6 +41,9 @@ const config = {
   CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
   CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
   OPENROUTER_API_KEY: process.env.OPENROUTER_API_KEY,
+  HF_TOKEN: process.env.HF_TOKEN,
+  HF_IMAGE_MODEL:
+    process.env.HF_IMAGE_MODEL
 };
 
 export default config;
