@@ -57,12 +57,13 @@ export default function Dashboard() {
   useEffect(() => {
     const loadRecentAds = async () => {
       try {
+        const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
         const userId = user?._id;
         const accessToken = getStoredAccessToken();
         const queryString = userId
           ? `?userId=${encodeURIComponent(userId)}`
           : "";
-        const response = await fetch(`/api/Ad/recent${queryString}`, {
+        const response = await fetch(`${apiUrl}/api/Ad/recent${queryString}`, {
           credentials: "include",
           headers: accessToken
             ? {
@@ -103,8 +104,9 @@ export default function Dashboard() {
     setError("");
 
     try {
+      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
       const accessToken = getStoredAccessToken();
-      const response = await fetch("/api/Ad/generate", {
+      const response = await fetch(`${apiUrl}/api/Ad/generate`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -150,7 +152,8 @@ export default function Dashboard() {
 
   const handleLogout = async () => {
     try {
-      await fetch("/api/auth/logout", {
+      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+      await fetch(`${apiUrl}/api/auth/logout`, {
         method: "GET",
         credentials: "include",
       });

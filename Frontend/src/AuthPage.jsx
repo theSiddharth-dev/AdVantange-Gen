@@ -50,6 +50,7 @@ const AuthPage = () => {
     setStatus("");
 
     try {
+      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
       const endpoint = isSignIn ? "/api/auth/login" : "/api/auth/register";
       const payload = isSignIn
         ? {
@@ -62,7 +63,7 @@ const AuthPage = () => {
             password: formData.password,
           };
 
-      const response = await fetch(endpoint, {
+      const response = await fetch(`${apiUrl}${endpoint}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
