@@ -6,13 +6,13 @@ import AdRouter from "./routes/adRoutes.routes.js";
 
 const App = express();
 
-
+const allowedOrigin = process.env.FRONTEND_URL || "http://localhost:5173";
 
 App.use(
   cors({
-    origin:["https://ad-vantange-gen.vercel.app/"],
+    origin: allowedOrigin,
     credentials: true,
-
+    
   }),
 );
 App.use(express.json());
