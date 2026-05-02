@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const initialFormState = {
@@ -32,6 +32,24 @@ const AuthPage = () => {
         : "Set up your account to start creating, editing, and launching ads in one place.",
     [isSignIn],
   );
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("token");
+    const user = params.get("user");
+
+    if (!token) {
+      return;
+    }
+
+    localStorage.setItem("accessToken", token);
+
+    if (user) {
+      localStorage.setItem("user", user);
+    }
+
+    navigate("/dashboard", { replace: true });
+  }, [navigate]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -116,6 +134,11 @@ const AuthPage = () => {
       ...current,
       password: "",
     }));
+  };
+
+  const handleGoogleSignIn = () => {
+    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+    window.location.href = `${apiUrl}/api/auth/google`;
   };
 
   return (
@@ -262,6 +285,7 @@ const AuthPage = () => {
                 type="button"
                 className="social-row__button"
                 aria-label={item.label}
+                onClick={handleGoogleSignIn}
               >
                 <span>{item.symbol}</span>
               </button>

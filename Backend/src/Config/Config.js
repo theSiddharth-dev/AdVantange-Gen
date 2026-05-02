@@ -33,12 +33,32 @@ if (!process.env.HF_TOKEN) {
   throw new Error("Hugging Face api is not defined in environment variables");
 }
 
-if(!process.env.HF_IMAGE_MODEL){
-  throw new Error("Hugging Face image model is not defined in environment variables");
+if (!process.env.HF_IMAGE_MODEL) {
+  throw new Error(
+    "Hugging Face image model is not defined in environment variables",
+  );
 }
 
-if(!process.env.FRONTEND_URL){
+if (!process.env.FRONTEND_URL) {
   console.warn("FRONTEND_URL is not defined in environment variables.");
+}
+
+if (!process.env.GOOGLE_CLIENT_ID) {
+  console.warn(
+    "GOOGLE_CLIENT_ID is not defined in environment variables. Google Sign-In will not work.",
+  );
+}
+
+if (!process.env.GOOGLE_CLIENT_SECRET) {
+  console.warn(
+    "GOOGLE_CLIENT_SECRET is not defined in environment variables. Google Sign-In will not work.",
+  );
+}
+
+if (!process.env.BACKEND_URL) {
+  console.warn(
+    "BACKEND_URL is not defined in environment variables. Google callback redirects may be incorrect behind proxies.",
+  );
 }
 
 const config = {
@@ -50,9 +70,11 @@ const config = {
   CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
   OPENROUTER_API_KEY: process.env.OPENROUTER_API_KEY,
   HF_TOKEN: process.env.HF_TOKEN,
-  HF_IMAGE_MODEL:
-    process.env.HF_IMAGE_MODEL,
+  HF_IMAGE_MODEL: process.env.HF_IMAGE_MODEL,
   FRONTEND_URL: process.env.FRONTEND_URL || "http://localhost:5173",
+  BACKEND_URL: process.env.BACKEND_URL,
+  GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+  GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
 };
 
 export default config;
