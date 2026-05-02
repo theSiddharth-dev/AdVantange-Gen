@@ -21,14 +21,19 @@ const createUniqueUsername = async (baseName) => {
 
   return candidate;
 };
+const getGoogleCallbackUrl = () => {
+  if (process.env.GOOGLE_CALLBACK_URL) return process.env.GOOGLE_CALLBACK_URL;
+  const base =
+    process.env.BACKEND_URL || `http://localhost:${process.env.PORT || 3000}`;
+  return `${base.replace(/\/$/, "")}/api/auth/google/callback`;
+};
 
 passport.use(
   new GoogleStrategy(
     {
       clientID: config.GOOGLE_CLIENT_ID,
       clientSecret: config.GOOGLE_CLIENT_SECRET,
-      callbackURL:
-        process.env.GOOGLE_CALLBACK_URL || "/api/auth/google/callback",
+      callbackURL: getGoogleCallbackUrl(),
     },
     async (_accessToken, _refreshToken, profile, done) => {
       try {
@@ -52,14 +57,26 @@ passport.use(
             .update(password)
             .digest("hex");
 
-          user = await userModel.create({
-            googleId: profile.id,
-            username,
-            email,
-            avatar,
-            authProvider: "google",
-            password: hashedPassword,
-          });
+          try {
+            user = await userModel.create({
+              googleId: profile.id,
+              username,
+              email,
+              avatar,
+              authProvider: "google",
+              password: hashedPassword,
+            });
+          } catch (createErr) {
+            // Handle race / duplicate key: try to find existing user and continue
+            if (createErr?.code === 11000) {
+              user = await userModel.findOne({
+                $or: [{ googleId: profile.id }, { email }],
+              });
+              if (!user) return done(createErr, null);
+            } else {
+              return done(createErr, null);
+            }
+          }
         } else {
           user.googleId = user.googleId || profile.id;
           user.avatar = avatar || user.avatar;

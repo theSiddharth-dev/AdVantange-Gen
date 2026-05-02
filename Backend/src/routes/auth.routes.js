@@ -5,6 +5,14 @@ import * as authController from "../Controllers/auth.Controller.js";
 const authRouter = Router();
 
 const buildGoogleCallbackUrl = (req) => {
+  if (process.env.GOOGLE_CALLBACK_URL) {
+    return process.env.GOOGLE_CALLBACK_URL;
+  }
+
+  if (process.env.BACKEND_URL) {
+    return `${process.env.BACKEND_URL.replace(/\/$/, "")}/api/auth/google/callback`;
+  }
+
   const forwardedProto = req.headers["x-forwarded-proto"];
   const protocol = forwardedProto || req.protocol;
   return `${protocol}://${req.get("host")}/api/auth/google/callback`;
