@@ -33,6 +33,14 @@ if (!process.env.HF_TOKEN) {
   throw new Error("Hugging Face api is not defined in environment variables");
 }
 
+if(!process.env.HF_IMAGE_MODEL){
+  throw new Error("Hugging Face image model is not defined in environment variables");
+}
+
+if(!process.env.FRONTEND_URL){
+  console.warn("FRONTEND_URL is not defined in environment variables.");
+}
+
 const config = {
   MONGODB_URI: process.env.MONGODB_URI,
   PORT: process.env.PORT,
@@ -43,7 +51,8 @@ const config = {
   OPENROUTER_API_KEY: process.env.OPENROUTER_API_KEY,
   HF_TOKEN: process.env.HF_TOKEN,
   HF_IMAGE_MODEL:
-    process.env.HF_IMAGE_MODEL
+    process.env.HF_IMAGE_MODEL,
+  FRONTEND_URL: process.env.FRONTEND_URL || "http://localhost:5173",
 };
 
 export default config;
