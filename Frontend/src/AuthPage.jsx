@@ -7,11 +7,9 @@ const initialFormState = {
   password: "",
 };
 
-const socialButtons = [
-  { label: "Google", symbol: "G" },
-];
+const socialButtons = [{ label: "Google", symbol: "G" }];
 
-const AuthPage = () => { 
+const AuthPage = () => {
   const navigate = useNavigate();
   const [mode, setMode] = useState("signin");
   const [formData, setFormData] = useState(initialFormState);
@@ -90,7 +88,7 @@ const AuthPage = () => {
 
       if (isSignIn) {
         setStatus(data?.message || "Signed in successfully.");
-        navigate("/dashboard")
+        navigate("/dashboard");
       } else {
         setStatus(
           data?.message || "Account created successfully. Sign in to continue.",
@@ -228,7 +226,6 @@ const AuthPage = () => {
                 </button>
               </div>
             </label>
-
 
             {error && (
               <p className="feedback feedback--error" role="alert">
